@@ -6,10 +6,10 @@
         <div class="sidebar-wrapper">
             <div class="logo">
                 <a href="javascript:void(0)" class="simple-text logo-mini">
-                    CT
+                    ML
                 </a>
                 <a href="javascript:void(0)" class="simple-text logo-normal">
-                    Creative Tim
+                    Algoritmos 
                 </a>
             </div>
             <ul class="nav">
@@ -17,6 +17,18 @@
                     <a href="/">
                         <i class="tim-icons icon-chart-pie-36"></i>
                         <p>Dashboard</p>
+                    </a>
+                </li>
+                <li class="{% if 'quienes' in segment %} active {% endif %} ">
+                    <a href="/quienes.html">
+                        <i class="tim-icons icon-heart-2"></i>
+                        <p>¿Quiénes somos?</p>
+                    </a>
+                </li>
+                <li class="{% if 'apriori' in segment %} active {% endif %} ">
+                    <a href="/apriori.html">
+                        <i class="tim-icons icon-shape-star"></i>
+                        <p>Apriori</p>
                     </a>
                 </li>
                 <li class="{% if 'user' in segment %} active {% endif %}">
