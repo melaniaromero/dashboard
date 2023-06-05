@@ -65,4 +65,21 @@ def get_segment(request):
     except:
         return None
 
+@blueprint.route('/apriori_resultados', methods = ['GET', 'POST'])
+@login_required
 
+def save_file():
+    current_app.config["UPLOAD_FOLDER"] = "static/"
+    if request.method == 'POST':
+        f = request.files['file']
+
+        filename = secure_filename(f.filename)
+
+        basedir = os.path.abspath(os.path.dirname(__file__))
+
+        f.save(os.path.join(basedir, current_app.config['UPLOAD_FOLDER'], filename))
+        filepath=os.path.join(basedir, current_app.config['UPLOAD_FOLDER'], filename)
+        file = open(current_app.config['UPLOAD_FOLDER'] + filename,"r")
+        content = file.read()
+
+    return render_template('home/content.html', filename =filename) 
