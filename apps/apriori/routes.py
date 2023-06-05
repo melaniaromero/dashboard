@@ -4,16 +4,22 @@ Copyright (c) 2019 - present AppSeed.us
 """
 
 from apps.apriori import blueprint
-from flask import render_template, request
 from flask_login import login_required
 from jinja2 import TemplateNotFound
 
+import os
+from itertools import chain, combinations
+from collections import defaultdict
+from flask import Flask, render_template, request
+from werkzeug.utils import secure_filename
+import datetime
 
-@blueprint.route('/index')
+
+@blueprint.route('/apriori')
 @login_required
-def index():
+def apriori():
 
-    return render_template('home/index.html', segment='index')
+    return render_template('home/apriori.html', segment='apriori')
 
 
 @blueprint.route('/<template>')
@@ -46,9 +52,11 @@ def get_segment(request):
         segment = request.path.split('/')[-1]
 
         if segment == '':
-            segment = 'index'
+            segment = 'apriori'
 
         return segment
 
     except:
         return None
+
+
