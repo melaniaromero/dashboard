@@ -2,23 +2,29 @@
 """
 Copyright (c) 2019 - present AppSeed.us
 """
-
+from flask import Flask, current_app
 from apps.apriori import blueprint
 from flask_login import login_required
 from jinja2 import TemplateNotFound
-
 import os
 from itertools import chain, combinations
 from collections import defaultdict
 from flask import Flask, render_template, request
 from werkzeug.utils import secure_filename
 import datetime
+import pandas as pd 
+import numpy as np                  # Para crear vectores y matrices n dimensionales
+from apyori import apriori
+import seaborn as sns 
+import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('Agg')
 
-
+#Se establece la ruta /apriori
 @blueprint.route('/apriori')
 @login_required
 def apriori():
-
+    current_app.config["UPLOAD_FOLDER"] = "static/"
     return render_template('home/apriori.html', segment='apriori')
 
 
