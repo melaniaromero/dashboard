@@ -11,16 +11,19 @@
   <div class="row">
     <div class="col-md-12">
       <div class="card">
-        <div class="card-header">
-          <h5 class="title">Resultados</h5>
+        <div class="card-body">
+          <h3 class="card-title">Resultados</h3>
+          <p>
+            Nombre del archivo: 
+            <span class="text-primary"> {{filename}} </span>
+          </p>
+          <p>
+            Contenido del archivo: 
+            <span class="text-primary"> {{content}} </span>
+          </p>
         </div>
-          <h3>Input file: {{filename}}</h3>
-          <h3>Contenido: <b><i>{{ content }}  </i>  </b></h3>
-           
- 
       </div>
     </div>
-    
   </div>
 </div>
 
@@ -28,3 +31,7 @@
 
   <!-- Specific Page JS goes HERE  -->
   {% block javascripts %}{% endblock javascripts %}
+
+ 
+
+                                     
