@@ -6,10 +6,25 @@
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
-<h1>Reglas de asociación</h1>
-  <h3>Input file: {{filename}}</h3>
-  <h3>Contenido: <b><i>{{ content }}  </i>  </b></h3>
-  {% endblock content %}
+
+<div class="content">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="title">Resultados</h5>
+        </div>
+          <h3>Input file: {{filename}}</h3>
+          <h3>Contenido: <b><i>{{ content }}  </i>  </b></h3>
+           
+ 
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+{% endblock content %}
 
   <!-- Specific Page JS goes HERE  -->
   {% block javascripts %}{% endblock javascripts %}
