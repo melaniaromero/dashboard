@@ -21,11 +21,19 @@
             Contenido del archivo: 
             <span class="text-primary"> {{content}} </span>
           </p>
+
         </div>
       </div>
     </div>
   </div>
+
+  {% if plot_url %}
+  <img src= {{plot_url}} alt = "Chart cannot be displayed">
+  {% endif %}
+  
 </div>
+
+
 
 {% endblock content %}
 

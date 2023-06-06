@@ -18,7 +18,7 @@ from apyori import apriori
 import seaborn as sns 
 import matplotlib.pyplot as plt
 import matplotlib
-matplotlib.use('Agg')
+matplotlib.use('agg')
 
 #Se establece la ruta /apriori
 @blueprint.route('/apriori')
@@ -83,4 +83,20 @@ def save_file():
         file = open("C:/Users/melan/Documents/flask-black-dashboard/apps/apriori/static/" + filename,"r")
         content = file.read()
 
-    return render_template('home/content.html', filename =filename, content=content) 
+        DatosTransacciones = pd.read_csv(filepath, header=None)
+        #Se incluyen todas las transacciones en una sola lista
+        Transacciones = DatosTransacciones.values.reshape(-1).tolist() #-1 significa 'dimensión desconocida'
+        Lista = pd.DataFrame(Transacciones)
+        Lista['Frecuencia'] = 1
+        #Se agrupa los elementos
+        Lista = Lista.groupby(by=[0], as_index=False).count().sort_values(by=['Frecuencia'], ascending=True) #Conteo
+        Lista['Porcentaje'] = (Lista['Frecuencia'] / Lista['Frecuencia'].sum()) #Porcentaje
+        Lista = Lista.rename(columns={0 : 'Item'})
+        plt.figure(figsize=(30,20), dpi=100)
+        plt.ylabel('Item')
+        plt.xlabel('Frecuencia')
+        plt.barh(Lista['Item'], width=Lista['Frecuencia'], color='blue')
+        plt.show()
+        plt.savefig('C:/Users/melan/Documents/flask-black-dashboard/apps/apriori/static/my_plot.png')
+
+    return render_template('home/content.html', filename =filename, content=content, get_plot = True, plot_url = 'C:/Users/melan/Documents/flask-black-dashboard/apps/apriori/static/my_plot.png') 
