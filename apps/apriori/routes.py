@@ -70,6 +70,7 @@ def get_segment(request):
 
 def save_file():
     current_app.config["UPLOAD_FOLDER"] = "static/"
+    
     if request.method == 'POST':
         f = request.files['file']
 
@@ -79,7 +80,7 @@ def save_file():
 
         f.save(os.path.join(basedir, current_app.config['UPLOAD_FOLDER'], filename))
         filepath=os.path.join(basedir, current_app.config['UPLOAD_FOLDER'], filename)
-        file = open(current_app.config['UPLOAD_FOLDER'] + filename,"r")
+        file = open("C:/Users/melan/Documents/flask-black-dashboard/apps/apriori/static/" + filename,"r")
         content = file.read()
 
-    return render_template('home/content.html', filename =filename) 
+    return render_template('home/content.html', filename =filename, content=content) 
