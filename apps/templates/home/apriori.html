@@ -32,16 +32,45 @@
             <span class="text-primary"> {{filename}} </span>
           </p>
 
-          <form action = "/apriori_resultados" onsubmit="Validate(this);" method = "POST" enctype = "multipart/form-data">
-            <p>
-            input file: <input type="file" name="file"><br>
+          <div class="card-body">
+            <form action = "/apriori_resultados" onsubmit="Validate(this);" method = "POST" enctype = "multipart/form-data">       
+              <div class="col-md-15 pr-md-10">
+                <label>Selecciona un archivo</label>
+                <input type="file" class="btn btn-fill btn-primary" name="file"></br>
+              </div>
+              <div class="row">    
+                  <div class="col-md-6 pr-md-1">
+                    <div class="form-group">
+                      <label>Soporte mínimo</label>
+                      <input type="text" class="form-control" placeholder="Ej: 0.0045" name="support">
+                    </div>
+                  </div>
+              </div>
   
-            minimal support: <input type="text" name="support"><br>
-            confidence: <input type="text" name="confidence"><br>
-            lift: <input type="text" name="lift"><br>
-            <input type="submit" value="Upload and Run Apriori Algorithm">
-            </p>
-          </form>
+              <div class="row">    
+                <div class="col-md-6 pr-md-1">
+                  <div class="form-group">
+                    <label>Confianza</label>
+                    <input type="text" class="form-control" placeholder="Ej: 0.2" name="confidence">
+                  </div>
+                </div>
+            </div>
+  
+  
+              <div class="row">
+                  <div class="col-md-6 pl-md-6">
+                      <div class="form-group">
+                        <label>Elevación</label>
+                        <input type="text" class="form-control" placeholder="Ej: 3" name="lift">
+                      </div>
+                  </div>
+              </div>
+              <button type="submit" class="btn btn-fill btn-primary">OK</button>    
+            </form>
+  
+        </div>
+
+  
           {% endif %}
          </div>
         </div>
