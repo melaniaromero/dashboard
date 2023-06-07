@@ -98,22 +98,17 @@ def save_file():
         Lista = Lista.rename(columns={0 : 'Item'})
         fig= Figure ()
         axis = fig.add_subplot()
-        #axis.figure(figsize=(30,20), dpi=100)
-        #plt.figure(figsize=(30,20), dpi=100)
-        fig.set_size_inches(16, 20)
-        fig.set_dpi(300)
-        axis.set_title("Frecuencia")
+        fig.set_size_inches(16, 23)
+        fig.set_dpi(700)
+        axis.set_title("Distribución de la frecuencia de los elementos")
         axis.set_xlabel("Frecuencia")
-        axis.set_ylabel("item")
-        axis.barh(Lista['Item'], width=Lista['Frecuencia'], color='blue')
+        axis.set_ylabel("Item")
+        axis.barh(Lista['Item'], width=Lista['Frecuencia'], color='violet')
         # Convert plot to PNG image
         pngImage = io.BytesIO()
         FigureCanvas(fig).print_png(pngImage)
         # Encode PNG image to base64 string
         pngImageB64String = "data:image/png;base64,"
         pngImageB64String += base64.b64encode(pngImage.getvalue()).decode('utf8')
-
-        #plt.show()
-        #plt.savefig('C:/Users/melan/Documents/flask-black-dashboard/apps/apriori/static/my_plot.png')
 
     return render_template('home/content.html', filename =filename, content=content, image=pngImageB64String) 
