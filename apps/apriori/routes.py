@@ -69,7 +69,7 @@ def get_segment(request):
     except:
         return None
 
-@blueprint.route('/apriori_resultados', methods = ['GET', 'POST'])
+@blueprint.route('/apriori', methods = ['GET', 'POST'])
 @login_required
 
 def save_file():
@@ -110,5 +110,51 @@ def save_file():
         # Encode PNG image to base64 string
         pngImageB64String = "data:image/png;base64,"
         pngImageB64String += base64.b64encode(pngImage.getvalue()).decode('utf8')
+    return render_template('home/apriori.html', filename =filename, content=content, image=pngImageB64String)
 
-    return render_template('home/content.html', filename =filename, content=content, image=pngImageB64String) 
+@blueprint.route('/apriori_resultados', methods = ['GET', 'POST'])
+@login_required
+
+def save():
+    current_app.config["UPLOAD_FOLDER"] = "static/"
+    
+    if request.method == 'POST':
+        f = request.files['file']
+        s = request.form['support']
+        c =request.form['confidence']
+        l =request.form['lift']
+
+        filename = secure_filename(f.filename)
+
+        basedir = os.path.abspath(os.path.dirname(__file__))
+
+        f.save(os.path.join(basedir, current_app.config['UPLOAD_FOLDER'], filename))
+        filepath=os.path.join(basedir, current_app.config['UPLOAD_FOLDER'], filename)
+        file = open("C:/Users/melan/Documents/flask-black-dashboard/apps/apriori/static/" + filename,"r")
+        content = file.read()
+
+        DatosTransacciones = pd.read_csv(filepath, header=None)
+        #Se incluyen todas las transacciones en una sola lista
+        Transacciones = DatosTransacciones.values.reshape(-1).tolist() #-1 significa 'dimensión desconocida'
+        Lista = pd.DataFrame(Transacciones)
+        Lista['Frecuencia'] = 1
+        #Se agrupa los elementos
+        Lista = Lista.groupby(by=[0], as_index=False).count().sort_values(by=['Frecuencia'], ascending=True) #Conteo
+        Lista['Porcentaje'] = (Lista['Frecuencia'] / Lista['Frecuencia'].sum()) #Porcentaje
+        Lista = Lista.rename(columns={0 : 'Item'})
+        fig= Figure ()
+        axis = fig.add_subplot()
+        fig.set_size_inches(16, 23)
+        fig.set_dpi(700)
+        axis.set_title("Distribución de la frecuencia de los elementos")
+        axis.set_xlabel("Frecuencia")
+        axis.set_ylabel("Item")
+        axis.barh(Lista['Item'], width=Lista['Frecuencia'], color='violet')
+        # Convert plot to PNG image
+        pngImage = io.BytesIO()
+        FigureCanvas(fig).print_png(pngImage)
+        # Encode PNG image to base64 string
+        pngImageB64String = "data:image/png;base64,"
+        pngImageB64String += base64.b64encode(pngImage.getvalue()).decode('utf8')
+    return render_template('home/content.html',s=s)
+
