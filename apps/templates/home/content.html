@@ -17,20 +17,19 @@
             Nombre del archivo: 
             <span class="text-primary"> {{filename}} </span>
           </p>
-          <p>
+          <!--<p>
             Contenido del archivo: 
             <span class="text-primary"> {{content}} </span>
-          </p>
+          </p>-->
 
         </div>
+        
       </div>
     </div>
+    <img src="{{ image }}"/>
   </div>
 
-  {% if plot_url %}
-  <img src= {{plot_url}} alt = "Chart cannot be displayed">
-  {% endif %}
-  
+
 </div>
 
 

@@ -19,6 +19,10 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib
 matplotlib.use('agg')
+import io
+import base64
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+from matplotlib.figure import Figure
 
 #Se establece la ruta /apriori
 @blueprint.route('/apriori')
@@ -92,11 +96,24 @@ def save_file():
         Lista = Lista.groupby(by=[0], as_index=False).count().sort_values(by=['Frecuencia'], ascending=True) #Conteo
         Lista['Porcentaje'] = (Lista['Frecuencia'] / Lista['Frecuencia'].sum()) #Porcentaje
         Lista = Lista.rename(columns={0 : 'Item'})
-        plt.figure(figsize=(30,20), dpi=100)
-        plt.ylabel('Item')
-        plt.xlabel('Frecuencia')
-        plt.barh(Lista['Item'], width=Lista['Frecuencia'], color='blue')
-        plt.show()
-        plt.savefig('C:/Users/melan/Documents/flask-black-dashboard/apps/apriori/static/my_plot.png')
+        fig= Figure ()
+        axis = fig.add_subplot()
+        #axis.figure(figsize=(30,20), dpi=100)
+        #plt.figure(figsize=(30,20), dpi=100)
+        fig.set_size_inches(16, 20)
+        fig.set_dpi(300)
+        axis.set_title("Frecuencia")
+        axis.set_xlabel("Frecuencia")
+        axis.set_ylabel("item")
+        axis.barh(Lista['Item'], width=Lista['Frecuencia'], color='blue')
+        # Convert plot to PNG image
+        pngImage = io.BytesIO()
+        FigureCanvas(fig).print_png(pngImage)
+        # Encode PNG image to base64 string
+        pngImageB64String = "data:image/png;base64,"
+        pngImageB64String += base64.b64encode(pngImage.getvalue()).decode('utf8')
 
-    return render_template('home/content.html', filename =filename, content=content, get_plot = True, plot_url = 'C:/Users/melan/Documents/flask-black-dashboard/apps/apriori/static/my_plot.png') 
+        #plt.show()
+        #plt.savefig('C:/Users/melan/Documents/flask-black-dashboard/apps/apriori/static/my_plot.png')
+
+    return render_template('home/content.html', filename =filename, content=content, image=pngImageB64String) 
