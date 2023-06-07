@@ -14,7 +14,6 @@ from werkzeug.utils import secure_filename
 import datetime
 import pandas as pd 
 import numpy as np                  # Para crear vectores y matrices n dimensionales
-
 import seaborn as sns 
 import matplotlib.pyplot as plt
 import matplotlib
@@ -137,10 +136,27 @@ def save():
         DatosTransacciones = pd.read_csv(filepath, header=None)
         #Se incluyen todas las transacciones en una sola lista
         TransaccionesLista = DatosTransacciones.stack().groupby(level=0).apply(list).tolist()
-        items = apriori(TransaccionesLista, min_support=float(s),  min_confidence=float(c),  min_lift=int(l))
+        resultados = apriori(TransaccionesLista, min_support=float(s),  min_confidence=float(c),  
+                             min_lift=int(l))
        
-        ResultadosC1 = list(items)
+        ResultadosC1 = list(resultados) #lista de los resultados
         total_item = len(ResultadosC1)
+        
+        def inspect(ResultadosC1):
+            baseItem   = [tuple(result[2][0][0])[0:] for result in ResultadosC1]
+            addItem     = [tuple(result[2][0][1])[0] for result in ResultadosC1]
+            supports    = [result[1] for result in ResultadosC1]
+            confidences = [result[2][0][2] for result in ResultadosC1]
+            lifts       = [result[2][0][3] for result in ResultadosC1]
+            
+            return list(zip(baseItem,addItem, supports, confidences, lifts))
+        
+        resultsinDataFrame = pd.DataFrame(inspect(ResultadosC1),columns=['items_base','items_add','Soporte',
+                                                            'Confianza','Elevación'])
 
-    return render_template('home/content.html',s=s,c=c,l=l,ResultadosC1=ResultadosC1,total_item=total_item)
+
+
+    return render_template('home/content.html',s=s,c=c,l=l,ResultadosC1=ResultadosC1,total_item=total_item,
+                           column_names=resultsinDataFrame.columns.values, row_data=list(resultsinDataFrame.values.tolist()),
+                           zip=zip)
 

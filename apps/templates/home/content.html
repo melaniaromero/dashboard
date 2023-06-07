@@ -23,7 +23,28 @@
             Elevación: <span class="text-primary"> {{l}} </span>
           </p> 
           <p>
-            Resultados: <span class="text-primary">{{ ResultadosC1 }} </span>
+            Resultados: 
+            <table class="table table-bordered" id="displaytable">
+              <thead>
+              <tr>
+                {% for col in column_names %}
+                <th class="text-center">{{col}}</th>
+                {% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in row_data %}
+            <tr>
+                {% for col, row_ in zip(column_names, row) %}
+                
+                <td class="text-center">{{row_}}</td>
+                
+                {% endfor %}
+            </tr>
+            {% endfor %}
+          </tbody>
+          </table>
+
           </p>
           <p>
             Número de reglas totales: <span class="text-primary">{{ total_item }} </span>
