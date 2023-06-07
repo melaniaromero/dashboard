@@ -14,7 +14,7 @@ from werkzeug.utils import secure_filename
 import datetime
 import pandas as pd 
 import numpy as np                  # Para crear vectores y matrices n dimensionales
-from apyori import apriori
+
 import seaborn as sns 
 import matplotlib.pyplot as plt
 import matplotlib
@@ -116,6 +116,7 @@ def save_file():
 @login_required
 
 def save():
+    from apyori import apriori
     current_app.config["UPLOAD_FOLDER"] = "static/"
     
     if request.method == 'POST':
@@ -135,26 +136,11 @@ def save():
 
         DatosTransacciones = pd.read_csv(filepath, header=None)
         #Se incluyen todas las transacciones en una sola lista
-        Transacciones = DatosTransacciones.values.reshape(-1).tolist() #-1 significa 'dimensión desconocida'
-        Lista = pd.DataFrame(Transacciones)
-        Lista['Frecuencia'] = 1
-        #Se agrupa los elementos
-        Lista = Lista.groupby(by=[0], as_index=False).count().sort_values(by=['Frecuencia'], ascending=True) #Conteo
-        Lista['Porcentaje'] = (Lista['Frecuencia'] / Lista['Frecuencia'].sum()) #Porcentaje
-        Lista = Lista.rename(columns={0 : 'Item'})
-        fig= Figure ()
-        axis = fig.add_subplot()
-        fig.set_size_inches(16, 23)
-        fig.set_dpi(700)
-        axis.set_title("Distribución de la frecuencia de los elementos")
-        axis.set_xlabel("Frecuencia")
-        axis.set_ylabel("Item")
-        axis.barh(Lista['Item'], width=Lista['Frecuencia'], color='violet')
-        # Convert plot to PNG image
-        pngImage = io.BytesIO()
-        FigureCanvas(fig).print_png(pngImage)
-        # Encode PNG image to base64 string
-        pngImageB64String = "data:image/png;base64,"
-        pngImageB64String += base64.b64encode(pngImage.getvalue()).decode('utf8')
-    return render_template('home/content.html',s=s)
+        TransaccionesLista = DatosTransacciones.stack().groupby(level=0).apply(list).tolist()
+        items = apriori(TransaccionesLista, min_support=float(s),  min_confidence=float(c),  min_lift=int(l))
+       
+        ResultadosC1 = list(items)
+        total_item = len(ResultadosC1)
+
+    return render_template('home/content.html',s=s,c=c,l=l,ResultadosC1=ResultadosC1,total_item=total_item)
 

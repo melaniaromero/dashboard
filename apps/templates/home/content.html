@@ -14,74 +14,25 @@
         <div class="card-body">
           <h3 class="card-title">Resultados</h3>
           <p>
-            Nombre del archivo: 
-            <span class="text-primary"> {{filename}} </span>
-          </p>
-
+            Soporte mínimo: <span class="text-primary"> {{s}} </span>
+          </p> 
           <p>
-            Nombre del archivo: 
-            <span class="text-primary"> {{s}} </span>
-          </p>
-          <!--<p>
-            Contenido del archivo: 
-            <span class="text-primary"> {{content}} </span>
-          </p>-->
+            Confianza: <span class="text-primary"> {{c}} </span>
+          </p> 
           <p>
-          Antes de ejecutar el algoritmo es recomendable observar la distribución de la frecuencia de los elementos.
+            Elevación: <span class="text-primary"> {{l}} </span>
+          </p> 
+          <p>
+            Resultados: <span class="text-primary">{{ ResultadosC1 }} </span>
           </p>
           <p>
-          Se muestra un gráfico de barras con la frecuencia de cada uno de los ítems antes de elegir un valor de Confianza, Soporte y Elevación.
+            Número de reglas totales: <span class="text-primary">{{ total_item }} </span>
           </p>
-          <!--<img src="{{ image }}"/> -->
-          <br></br>
-
-          <br>
-          <p>
-            De acuerdo a la gráfica anterior, elije los valores de Soporte, Confianza y Elevación
-          </p>
-        </div></br>
-
-        <div class="card-body">
-          <form action = "/content" onsubmit="Validate(this);" method = "POST" enctype = "multipart/form-data">       
-            <div class="row">    
-                <div class="col-md-6 pr-md-1">
-                  <div class="form-group">
-                    <label>Soporte mínimo</label>
-                    <input type="text" class="form-control" placeholder="Ej: 0.0045" name="support">
-                  </div>
-                </div>
-            </div>
-
-            <div class="row">    
-              <div class="col-md-6 pr-md-1">
-                <div class="form-group">
-                  <label>Confianza</label>
-                  <input type="text" class="form-control" placeholder="Ej: 0.2" name="confidence">
-                </div>
-              </div>
-          </div>
-
-
-            <div class="row">
-                <div class="col-md-6 pl-md-6">
-                    <div class="form-group">
-                      <label>Elevación</label>
-                      <input type="text" class="form-control" placeholder="Ej: 3" name="lift">
-                    </div>
-                </div>
-            </div>
-            <button type="submit" class="btn btn-fill btn-primary">OK</button>    
-          </form>
-
-        </div>
-      </div>  
+        </div>  
       </div>
     </div>
   </div>
 </div>
-
-
-
 
 {% endblock content %}
 
