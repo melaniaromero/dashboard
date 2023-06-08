@@ -6,31 +6,50 @@
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
-
-
 <div class="content">
     <div class="row">
-      <div class="col-md-12">
-        <div class="card">
-          <div class="card-header">
-            <h3 class="card-title">Segundo algoritmo: Clustering</h3>
-          </div>
-
-         <div class="card-body">
-          <form action = "/clustering" onsubmit="Validate(this);" method = "POST" enctype = "multipart/form-data">
-            <div class="col-md-15 pr-md-10">
-                <label>Selecciona un archivo</label> 
-                <br></br>
-                <input type="file" class="btn btn-fill btn-primary" name="file"></br>
-            </div>            
-            <br></br>
-            <button type="submit" class="btn btn-fill btn-primary">Cargar archivo</button>  
-          </form>
-          <br></br>
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Segundo algoritmo: Clustering</h3>
+                </div>
+                <div class="card-body">
+                    <form action="/clustering" onsubmit="Validate(this);" method="POST" enctype="multipart/form-data">
+                        <div class="col-md-15 pr-md-10">
+                            <label>Selecciona un archivo</label> 
+                            <br></br>
+                            <input type="file" class="btn btn-fill btn-primary" name="file"></br>
+                        </div>
+                        <div class="col-md-15 pr-md-10">
+                            <label>Tipo de Clustering</label> 
+                            <br></br>
+                            <select name="clustering_type" class="btn btn-fill btn-primary">
+                                <option value="particional">Particional</option>
+                                <option value="jerarquico">Jerárquico</option>
+                            </select>
+                        </div>
+                        <div class="col-md-15 pr-md-10">
+                            <label>Métrica de Distancia (Cambialo solo si vas a utilizar Jerárquico)</label> 
+                            <br></br>
+                            <select name="distance_metric" class="btn btn-fill btn-primary">
+                                <option value="manhattan">Métrica de Manhattan</option>
+                                <option value="chebyshev">Métrica de Chebyshev</option>
+                                <option value="euclidean">Métrica Euclidiana</option>
+                                <option value="minkowski">Métrica de Minkowski</option>
+                            </select>
+                        </div>
+                        <div class="col-md-15 pr-md-10">
+                            <label>Número de Clusters</label>
+                            <br></br>
+                            <input type="number" name="num_clusters" class="btn btn-fill btn-primary" min="2" required>
+                        </div>
+                        <br></br>
+                        <button type="submit" class="btn btn-fill btn-primary">Cargar archivo</button>  
+                    </form>
+                    <br></br>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 </div>
-
 {% endblock content %}

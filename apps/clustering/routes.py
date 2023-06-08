@@ -2,10 +2,9 @@
 from flask import Flask, render_template, request, current_app
 from apps.clustering import blueprint
 from flask_login import login_required
-
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
-from sklearn.cluster import AgglomerativeClustering
+from sklearn.cluster import AgglomerativeClustering, KMeans
 import seaborn as sns
 import matplotlib.pyplot as plt
 from scipy.cluster.hierarchy import dendrogram
@@ -21,12 +20,11 @@ from jinja2 import TemplateNotFound
 def index():
     return render_template('home/clustering.html')
 
+
 @blueprint.route('/<template>')
 @login_required
 def route_template(template):
-
     try:
-
         if not template.endswith('.html'):
             template += '.html'
 
@@ -45,9 +43,7 @@ def route_template(template):
 
 # Helper - Extract current page name from request
 def get_segment(request):
-
     try:
-
         segment = request.path.split('/')[-1]
 
         if segment == '':
@@ -59,85 +55,146 @@ def get_segment(request):
         return None
 
 
-# Ruta para realizar el clustering
 @blueprint.route('/clustering', methods=['POST'])
 @login_required
 def clustering():
-	try:
-		current_app.config["UPLOAD_FOLDER"] = "static/"
-		if request.method == 'POST':
-			f = request.files['file']
+    num_clusters = int(request.form['num_clusters'])
+    try:
+        current_app.config["UPLOAD_FOLDER"] = "static/"
+        if request.method == 'POST':
+            f = request.files['file']
+            clustering_type = request.form.get('clustering_type')  # Obtener el tipo de clustering seleccionado
+            distance_metric = request.form.get('distance_metric')  # Obtener la métrica de distancia seleccionada
 
-			filename = secure_filename(f.filename)
+            filename = secure_filename(f.filename)
 
-			basedir = os.path.abspath(os.path.dirname(__file__))
+            basedir = os.path.abspath(os.path.dirname(__file__))
 
-			f.save(os.path.join(basedir, current_app.config['UPLOAD_FOLDER'], filename))
-			filepath=os.path.join(basedir, current_app.config['UPLOAD_FOLDER'], filename)
-						
-			# Obtener el archivo CSV enviado desde el formulario
-			df = pd.read_csv(filepath, header=None)
+            f.save(os.path.join(basedir, current_app.config['UPLOAD_FOLDER'], filename))
+            filepath = os.path.join(basedir, current_app.config['UPLOAD_FOLDER'], filename)
 
-			# Eliminar las primeras filas no numéricas del DataFrame
-			df = df.apply(pd.to_numeric, errors='coerce').dropna()
+            # Obtener el archivo CSV enviado desde el formulario
+            df = pd.read_csv(filepath, header=None)
 
-			if df.shape[0] < 1:
-				return "Error: No se encontraron datos numéricos después de la eliminación de filas no numéricas."
+            # Eliminar las primeras filas no numéricas del DataFrame
+            df = df.apply(pd.to_numeric, errors='coerce').dropna()
 
-			# Preprocesamiento de los datos
-			estandarizar = StandardScaler()
-			MEstandarizada = estandarizar.fit_transform(df)
+            if df.shape[0] < 1:
+                return "Error: No se encontraron datos numéricos después de la eliminación de filas no numéricas."
 
-			# Clustering jerárquico
-			MJerarquico = AgglomerativeClustering(n_clusters=4, linkage='complete', affinity='euclidean')
-			MJerarquico_labels = MJerarquico.fit_predict(MEstandarizada)
+            # Preprocesamiento de los datos
+            estandarizar = StandardScaler()
+            MEstandarizada = estandarizar.fit_transform(df)
+            elbow_plot_path = ''  # Definir elbow_plot_path con un valor predeterminado
 
-			# Agregar las etiquetas de clúster al DataFrame
-			df['clusterH'] = MJerarquico_labels
+            if clustering_type == 'particional':
+                # Clustering particional (K-means)
+                MKMeans = KMeans(n_clusters=num_clusters, random_state=0)
 
-			# Calcular los centroides de los clústeres
-			CentroidesH = df.groupby(['clusterH']).mean()
+                # Determinar el número óptimo de clusters usando el método del codo
+                num_clusters_range = range(1, 11)
+                inertia = []
+                for k in num_clusters_range:
+                    MKMeans.n_clusters = k
+                    MKMeans.fit(MEstandarizada)
+                    inertia.append(MKMeans.inertia_)
 
-			# Crear el gráfico de dispersión
-			plt.figure(figsize=(8, 6))
-			plt.scatter(df.iloc[:, 0], df.iloc[:, 1], c=df['clusterH'], cmap='viridis')
-			plt.xlabel(df.columns[0])
-			plt.ylabel(df.columns[1])
-			plt.title('Cluster Scatter Plot')
-			plt.colorbar(label='Cluster')
-			scatter_plot_path = os.path.join(basedir, current_app.config['UPLOAD_FOLDER'], 'scatter_plot.png')
-			plt.savefig(scatter_plot_path)
-			plt.close()
+                # Gráfico del codo
+                plt.figure(figsize=(8, 6))
+                plt.plot(num_clusters_range, inertia, marker='o')
+                plt.xlabel('Número de Clusters')
+                plt.ylabel('Inertia')
+                plt.title('Método del Codo')
+                elbow_plot_path = os.path.join(basedir, current_app.config['UPLOAD_FOLDER'], 'elbow_plot.png')
+                plt.savefig(elbow_plot_path)
+                plt.close()
 
-			# Crear el dendrograma
-			Z = linkage(MEstandarizada, method='complete', metric='euclidean')
-			plt.figure(figsize=(12, 8))
-			dendrogram(Z)
-			plt.xlabel('Samples')
-			plt.ylabel('Distance')
-			plt.title('Dendrogram')
-			dendrogram_path = os.path.join(basedir, current_app.config['UPLOAD_FOLDER'], 'dendrogram.png')
-			plt.savefig(dendrogram_path)
-			plt.close()
+                # Gráfico de puntos distribuidos estandarizados
+                plt.figure(figsize=(8, 6))
+                plt.scatter(MEstandarizada[:, 0], MEstandarizada[:, 1], c=MKMeans.labels_, cmap='viridis')
+                plt.xlabel(df.columns[0])
+                plt.ylabel(df.columns[1])
+                plt.title('Puntos Distribuidos Estandarizados')
+                scatter_plot_path = os.path.join(basedir, current_app.config['UPLOAD_FOLDER'], 'scatter_plot.png')
+                plt.savefig(scatter_plot_path)
+                plt.close()
 
-			# Crear el mapa de calor
-			plt.figure(figsize=(10, 8))
-			sns.heatmap(df.corr(), annot=True, cmap='coolwarm', linewidths=0.5)
-			plt.title('Correlation Heatmap')
-			heatmap_path = os.path.join(basedir, current_app.config['UPLOAD_FOLDER'], 'heatmap.png')
-			plt.savefig(heatmap_path)
-			plt.close()
+                # Obtener los resultados finales con el número óptimo de clusters
+                MKMeans.n_clusters = num_clusters
+                MKMeans_labels = MKMeans.fit_predict(MEstandarizada)
 
-			# Crear el pairplot
-			sns.set(style="ticks")
-			pairplot = sns.pairplot(df, hue='clusterH')
-			pairplot_path = os.path.join(basedir, current_app.config['UPLOAD_FOLDER'], 'pairplot.png')
-			pairplot.savefig(pairplot_path)
-			plt.close()
+                # Agregar las etiquetas de clúster al DataFrame para el clustering particional
+                df['cluster'] = MKMeans_labels
 
-			# Pasar los resultados a la plantilla HTML
-			return render_template('home/clustering_results.html', scatter_plot_path=scatter_plot_path, dendrogram_path=dendrogram_path, heatmap_path=heatmap_path, pairplot_path=pairplot_path, centroids=CentroidesH.to_html())
+                # Calcular los centroides de los clústeres para el clustering particional
+                Centroides = df.groupby(['cluster']).mean()
 
-	except Exception as e:
-		return f"Error: {e}"
-	
+                # Pasar los resultados a la plantilla HTML correspondiente
+                return render_template('home/clustering_par.html', scatter_plot_path=scatter_plot_path,
+                                       elbow_plot_path=elbow_plot_path, centroids=Centroides.to_html())
+
+            elif clustering_type == 'jerarquico':
+                if distance_metric == 'manhattan':
+                    MJerarquico = AgglomerativeClustering(n_clusters=num_clusters, linkage='complete', affinity='l1')
+                elif distance_metric == 'chebyshev':
+                    MJerarquico = AgglomerativeClustering(n_clusters=num_clusters, linkage='complete', affinity='chebyshev')
+                elif distance_metric == 'euclidean':
+                    MJerarquico = AgglomerativeClustering(n_clusters=num_clusters, linkage='complete', affinity='euclidean')
+                elif distance_metric == 'minkowski':
+                    MJerarquico = AgglomerativeClustering(n_clusters=num_clusters, linkage='complete', affinity='minkowski', p=2)
+                else:
+                    return "Error: Métrica de distancia no válida."
+                MJerarquico_labels = MJerarquico.fit_predict(MEstandarizada)
+
+                # Agregar las etiquetas de clúster al DataFrame para el clustering jerárquico
+                df['cluster'] = MJerarquico_labels
+
+                # Calcular los centroides de los clústeres para el clustering jerárquico
+                Centroides = df.groupby(['cluster']).mean()
+
+                # Crear el gráfico de dispersión para el clustering jerárquico
+                plt.figure(figsize=(8, 6))
+                plt.scatter(df.iloc[:, 0], df.iloc[:, 1], c=df['cluster'], cmap='viridis')
+                plt.xlabel(df.columns[0])
+                plt.ylabel(df.columns[1])
+                plt.title('Cluster Scatter Plot (Jerárquico)')
+                plt.colorbar(label='Cluster')
+                scatter_plot_path = os.path.join(basedir, current_app.config['UPLOAD_FOLDER'], 'scatter_plot.png')
+                plt.savefig(scatter_plot_path)
+                plt.close()
+
+                # Crear el mapa de calor (heatmap) para el clustering jerárquico
+                plt.figure(figsize=(8, 6))
+                sns.heatmap(df.iloc[:, :2], cbar=True, cmap='viridis')
+                plt.xlabel(df.columns[0])
+                plt.ylabel(df.columns[1])
+                plt.title('Cluster Heatmap (Jerárquico)')
+                heatmap_path = os.path.join(basedir, current_app.config['UPLOAD_FOLDER'], 'heatmap.png')
+                plt.savefig(heatmap_path)
+                plt.close()
+
+                # Crear el pairplot para el clustering jerárquico
+                plt.figure(figsize=(8, 6))
+                sns.pairplot(df, vars=df.columns[:2], hue='cluster', palette='viridis')
+                plt.title('Pair Plot (Jerárquico)')
+                pairplot_path = os.path.join(basedir, current_app.config['UPLOAD_FOLDER'], 'pairplot.png')
+                plt.savefig(pairplot_path)
+                plt.close()
+
+                # Crear el dendrograma
+                Z = linkage(MEstandarizada, method='complete', metric=distance_metric)
+                plt.figure(figsize=(12, 8))
+                dendrogram(Z)
+                plt.xlabel('Samples')
+                plt.ylabel('Distance')
+                plt.title('Dendrogram')
+                dendrogram_path = os.path.join(basedir, current_app.config['UPLOAD_FOLDER'], 'dendrogram.png')
+                plt.savefig(dendrogram_path)
+                plt.close()
+
+                # Pasar los resultados a la plantilla HTML correspondiente
+                return render_template('home/clustering_jer.html', scatter_plot_path=scatter_plot_path,
+                                       dendrogram_path=dendrogram_path, heatmap_path=heatmap_path,
+                                       pairplot_path=pairplot_path, centroids=Centroides.to_html())
+    except Exception as e:
+        return f"Error: {e}"
