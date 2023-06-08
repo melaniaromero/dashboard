@@ -66,7 +66,7 @@ def get_segment(request):
 # Ruta para realizar el clustering
 @blueprint.route('/bosques', methods=['POST'])
 @login_required
-def clustering():
+def bosques():
     try:
         current_app.config["UPLOAD_FOLDER"] = "static/"
         if request.method == 'POST':
@@ -76,7 +76,7 @@ def clustering():
             f.save(os.path.join(basedir, current_app.config['UPLOAD_FOLDER'], filename))
             filepath = os.path.join(basedir, current_app.config['UPLOAD_FOLDER'], filename)
             # Obtener el archivo CSV enviado desde el formulario
-            datos = pd.read_csv(filepath, header=None)
+            datos = pd.read_csv(filepath, header=None, skiprows=1)
             # Procesamiento y entrenamiento del modelo
             X = datos.iloc[:, :-1].values
             y = datos.iloc[:, -1].values
@@ -106,7 +106,7 @@ def clustering():
             plt.xlabel('Valores Reales')
             plt.ylabel('Valores Predichos')
             plt.title('Predicciones de Bosques')
-            plot_filename = 'plot.png'  # Nombre de archivo de la imagen
+            plot_filename = os.path.join(current_app.config['UPLOAD_FOLDER'], 'plot.png')
             plt.savefig('static/' + plot_filename)  # Guardar la imagen en la carpeta "static"
             plt.close()
 
