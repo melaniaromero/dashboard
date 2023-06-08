@@ -71,8 +71,9 @@ def bosques():
             # Procesamiento y entrenamiento del modelo
             X = datos.iloc[:, :-1].values
             y = datos.iloc[:, -1].values
-
-            X_train, X_test, y_train, y_test = model_selection.train_test_split(X, y, test_size=0.2, random_state=42)
+            # Obtener el tamaño de prueba ingresado por el usuario
+            test_size = int(request.form.get('test_size'))
+            X_train, X_test, y_train, y_test = model_selection.train_test_split(X, y, test_size=test_size/100, random_state=42)
 
             tipo_bosques = request.form.get('algorithm')  # Obtener el tipo de bosques seleccionado
 
