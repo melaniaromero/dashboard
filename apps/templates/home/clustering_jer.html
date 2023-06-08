@@ -1,0 +1,58 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Clustering{% endblock %} 
+
+<!-- Specific Page CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+<div class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Segundo algoritmo: Clustering</h3>
+                </div>
+
+                <div class="card-body">
+                    <h1>Clustering Jerárquico</h1>
+
+                    <h2>Scatter Plot</h2>
+                    <blockquote class="blockquote blockquote-primary">
+                        <p class="mb-0">El scatter plot muestra la distribución de los datos en un plano bidimensional. Cada punto representa una muestra y su posición relativa indica su similitud o proximidad en el espacio de características.</p>
+                    </blockquote>
+                    <img src="{{ scatter_plot_path }}" alt="Scatter Plot">
+
+                    <h2>Dendrogram</h2>
+                    <blockquote class="blockquote blockquote-primary">
+                        <p class="mb-0">El dendrograma es una representación gráfica de la estructura jerárquica de los clusters. Muestra cómo se agrupan y dividen los datos en función de su similitud. Las ramas del dendrograma indican las fusiones o divisiones de los clusters.</p>
+                    </blockquote>
+                    <img src="{{ dendrogram_path }}" alt="Dendrogram">
+
+                    <h2>Heatmap</h2>
+                    <blockquote class="blockquote blockquote-primary">
+                        <p class="mb-0">El heatmap es una representación visual de la matriz de similitud o distancia entre las muestras. Los colores en el heatmap muestran la medida de similitud, donde los colores más oscuros indican una mayor similitud y los colores más claros indican una menor similitud.</p>
+                    </blockquote>
+                    <img src="{{ heatmap_path }}" alt="Heatmap">
+                        
+                    <h2>Pairplot</h2>
+                    <blockquote class="blockquote blockquote-primary">
+                        <p class="mb-0">El pairplot muestra las relaciones y distribuciones de las características en pares. Cada gráfico en el pairplot representa la relación entre dos características, mientras que los histogramas en la diagonal muestran las distribuciones de cada característica por separado.</p>
+                    </blockquote>
+                    <img src="{{ pairplot_path }}" alt="Pair Plot">
+
+                    <h2>Centroids</h2>
+                    <blockquote class="blockquote blockquote-primary">
+                        <p class="mb-0">Los centroides son puntos representativos de cada cluster en el clustering jerárquico. Representan el centroide del grupo de muestras asignadas a cada cluster y pueden ser útiles para comprender las características centrales de cada grupo.</p>
+                    </blockquote>
+                    {{ centroids | safe }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE -->
+{% block javascripts %}{% endblock javascripts %}
+
