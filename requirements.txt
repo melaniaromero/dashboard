@@ -41,3 +41,5 @@ seaborn==0.12.2
 scikit-learn==1.0.2
 joblib==1.2.0
 threadpoolctl==3.1.0
+scikit-learn==1.2.2
+graphviz==0.20.1
