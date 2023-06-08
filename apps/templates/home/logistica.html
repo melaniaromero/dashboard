@@ -1,0 +1,37 @@
+hola{% extends "layouts/base.html" %}
+
+{% block title %} Apriori {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+
+<div class="content">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Primer algoritmo: Reglas de asociación</h3>
+          </div>
+
+         <div class="card-body">
+          <form action = "/logistica" onsubmit="Validate(this);" method = "POST" enctype = "multipart/form-data">
+            <div class="col-md-15 pr-md-10">
+                <label>Selecciona un archivo</label> 
+                <br></br>
+                <input type="file" class="btn btn-fill btn-primary" name="file"></br>
+            </div>            
+            <br></br>
+            <button type="submit" class="btn btn-fill btn-primary">Cargar archivo</button>  
+          </form>
+
+          <br></br>
+
+        
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}
