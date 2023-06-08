@@ -17,6 +17,7 @@ import numpy as np                  # Para crear vectores y matrices n dimension
 import seaborn as sns 
 import matplotlib.pyplot as plt
 import matplotlib
+import seaborn as sns
 matplotlib.use('agg')
 import io
 import base64
@@ -25,7 +26,12 @@ from matplotlib.figure import Figure
 from scipy.spatial.distance import cdist    # Para el cálculo de distancias
 from scipy.spatial import distance
 from sklearn.preprocessing import StandardScaler, MinMaxScaler  
-
+from sklearn import model_selection
+from sklearn import linear_model
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import classification_report
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import RocCurveDisplay
 #Se establece la ruta /metricas
 @blueprint.route('/logistica')
 @login_required
@@ -79,8 +85,17 @@ def save_file():
     
     if request.method == 'POST':
         f = request.files['file']
-        fil =request.form['fila']
-        filas = int(fil)
+
+        P = request.form['Pregnancies']
+        G = request.form['Glucose']
+        B= request.form['BloodPressure']
+        S=request.form['SkinThickness']
+        I=request.form['Insulin']
+        BMI=request.form['BMI']
+        D=request.form['DiabetesPedigreeFunction']
+        E=request.form['Edad']
+
+
 
         filename = secure_filename(f.filename)
 
@@ -88,9 +103,97 @@ def save_file():
 
         f.save(os.path.join(basedir, current_app.config['UPLOAD_FOLDER'], filename))
         filepath=os.path.join(basedir, current_app.config['UPLOAD_FOLDER'], filename)
-        file = open("C:/Users/melan/Documents/flask-black-dashboard/apps/metricas/static/" + filename,"r")
-        diabetes = pd.read_csv(filepath)
-        return render_template('home/logistica.html', filename =filename)
+        file = open("C:/Users/melan/Documents/flask-black-dashboard/apps/logistica/static/" + filename,"r")
+        Diabetes = pd.read_csv(filepath)
+
+        out=Diabetes.groupby('Outcome').size()
+        outD=pd.DataFrame(out)
+
+        MatrizInf = np.triu(Diabetes.corr())
+        
+        sns.heatmap(Diabetes.corr(), cmap='RdBu_r', annot=True, mask=MatrizInf)
+        img = io.BytesIO()
+        plt.gcf().set_size_inches(16, 18)
+        plt.savefig(img, format='png',  dpi=300)
+        plt.close()
+        img.seek(0)
+        plot_url = base64.b64encode(img.getvalue()).decode('utf8')
+
+       
+        #Variables predictoras
+        X = np.array(Diabetes[['Pregnancies', 
+                       'Glucose', 
+                       'BloodPressure', 
+                       'SkinThickness', 
+                       'Insulin', 
+                       'BMI',
+                       'DiabetesPedigreeFunction',
+                       'Age']])
+        
+        #Variable clase
+        Y = np.array(Diabetes[['Outcome']])
+     
+
+
+
+        X_train, X_validation, Y_train, Y_validation = model_selection.train_test_split(X, Y, 
+                                                                                test_size = 0.2, 
+                                                                                random_state = 0,
+                                                                                shuffle = True)
+        
+        ClasificacionRL = linear_model.LogisticRegression()
+        ClasificacionRL.fit(X_train, Y_train)
+        Probabilidad = ClasificacionRL.predict_proba(X_validation)
+
+        proba=pd.DataFrame(Probabilidad)
+        
+        Y_ClasificacionRL = ClasificacionRL.predict(X_validation)
+        accuracy=accuracy_score(Y_validation, Y_ClasificacionRL)
+
+        ModeloClasificacion = ClasificacionRL.predict(X_validation)
+        Matriz_Clasificacion = pd.crosstab(Y_validation.ravel(), 
+                                   ModeloClasificacion, 
+                                   rownames=['Reales'], 
+                                   colnames=['Clasificación']) 
+        
+        exactitud=accuracy_score(Y_validation, Y_ClasificacionRL)
+        ab=classification_report(Y_validation, Y_ClasificacionRL, output_dict=True)
+        report = pd.DataFrame(ab).transpose()
+
+        CurvaROC = RocCurveDisplay.from_estimator(ClasificacionRL, X_validation, Y_validation, name="Diabetes")
+
+
+        img1 = io.BytesIO()
+        plt.gcf().set_size_inches(16, 18)
+        plt.savefig(img1, format='png',  dpi=300)
+        plt.close()
+        img.seek(0)
+        plot_url1 = base64.b64encode(img1.getvalue()).decode('utf8')
+
+
+        #Paciente
+        PacienteID = pd.DataFrame({'Pregnancies': [int(P)],
+                           'Glucose': [int(G)],
+                           'BloodPressure': [int(B)],
+                           'SkinThickness': [int(S)],
+                           'Insulin': [int(I)],
+                           'BMI': [float(BMI)],
+                           'DiabetesPedigreeFunction': [float(D)],
+                           'Age': [int(E)]})
+        resultadosF=ClasificacionRL.predict(PacienteID)
+
+
+        
+
+
+
+
+
+
+        return render_template('home/logistica.html', filename =filename, plot_url=plot_url, outD=outD.to_html(),
+                               proba=proba.to_html(), Y_ClasificacionRL= Y_ClasificacionRL,
+                               accuracy=accuracy, Matriz_Clasificacion= Matriz_Clasificacion.to_html(),
+                               resultadosF=resultadosF,exactitud=exactitud, report=report.to_html(), plot_url1=plot_url1)
 
 
 
