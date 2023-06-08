@@ -83,11 +83,10 @@ def save_file():
 
         f.save(os.path.join(basedir, current_app.config['UPLOAD_FOLDER'], filename))
         filepath=os.path.join(basedir, current_app.config['UPLOAD_FOLDER'], filename)
-<<<<<<< HEAD
+        
         file = open("C:/Users/melan/Documents/flask-black-dashboard/apps/apriori/static/" + filename,"r")
-=======
+
         file = open(filepath, "r")
->>>>>>> ce1c4b499ca2606702c064c6c27f124f794960b4
         content = file.read()
 
         DatosTransacciones = pd.read_csv(filepath, header=None)
