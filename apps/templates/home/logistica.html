@@ -1,4 +1,4 @@
-hola{% extends "layouts/base.html" %}
+{% extends "layouts/base.html" %}
 
 {% block title %} Apriori {% endblock %} 
 
@@ -13,21 +13,250 @@ hola{% extends "layouts/base.html" %}
       <div class="col-md-12">
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title">Primer algoritmo: Reglas de asociación</h3>
+            <h3 class="card-title">Regresión logística</h3>
           </div>
 
          <div class="card-body">
           <form action = "/logistica" onsubmit="Validate(this);" method = "POST" enctype = "multipart/form-data">
             <div class="col-md-15 pr-md-10">
-                <label>Selecciona un archivo</label> 
-                <br></br>
+                <label>Selecciona un archivo</label>
+                <p>Para usos prácticos, elije diabetes.csv</p>> 
+                
                 <input type="file" class="btn btn-fill btn-primary" name="file"></br>
             </div>            
             <br></br>
+           
+
+            <p>Variables:</p>
+
+                <p>Número de embarazos (Pregnancies): número de veces que ha estado embarazada la persona.</p>
+                
+                <p>Concentración de glucosa en plasma (Glucose): cantidad de glucosa en la sangre. Cuando una persona ha ingerido alimento los valores normales son menores a 140 mg/DL y cuando los resultados se dan entre 140 a 190 son indicativos de diabetes. </p>
+                
+                <p>Presión arterial diastólica (BloodPressure): es la cantidad de presión que hay en las arterias ente un latido y otro.</p>
+                
+                <p>Espesor del pliegue cutáneo (SkinThickness): es un procedimiento frecuentemente utilizado, en combinación con el índice de masa corporal (IMC), para estimar la grasa corporal. Medir los pliegues cutáneos 
+                    permite valorar los depósitos de grasa del cuerpo humano. A modo de referencia, según la medicina el espesor normal: ♂ 12 mm; ♀ 23 mm.</p>
+                
+                <p>Insulina (Insulin): es una prueba de insulina que consiste analizar antes de administrar la glucosa y 2 horas después. La razón por la que se 
+                    realizan estas pruebas es para ver la curva de respuesta a la glucosa.</p>
+                
+                <p>Índice de masa corporal (BMI): es utilizado para estimar la cantidad de grasa corporal, y determinar si el peso está dentro del rango normal, o por el contrario, 
+                    se tiene sobrepeso o delgadez.</p>
+                
+                <p> Función pedigrí de la diabetes (DiabetesPedigreeFunction): es una función que califica la probabilidad de diabetes según los antecedentes familiares.</p>
+                
+                <p>Edad en años (Age).</p>
+                
+                <p>Resultado (Outcome): si es positivo o negativo al diagnóstico de diabetes.</p>
+
+                <p><span class="text-primary">En necesario mencionar esto, ya que te permitirá predecir si un paciente da positivo o negativo a diabetes.</span></p>
+                <p><span class="text-primary">Completa los siguientes datos.</span></p>
+
+                <div class="row">    
+                    <div class="col-md-6 pr-md-1">
+                      <div class="form-group">
+                        <label>Pregnancies</label>
+                        <input type="text" class="form-control" placeholder="Ej: 6" name="Pregnancies">
+                      </div>
+                    </div>
+                </div>
+    
+                <div class="row">    
+                  <div class="col-md-6 pr-md-1">
+                    <div class="form-group">
+                      <label>Glucose</label>
+                      <input type="text" class="form-control" placeholder="Ej: 148" name="Glucose">
+                    </div>
+                  </div>
+                </div>
+  
+                <div class="row">
+                    <div class="col-md-6 pl-md-6">
+                        <div class="form-group">
+                          <label>Blood Pressure:</label>
+                          <input type="text" class="form-control" placeholder="Ej: 72" name="BloodPressure">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 pl-md-6">
+                        <div class="form-group">
+                          <label>Skin Thickness:</label>
+                          <input type="text" class="form-control" placeholder="Ej: 35" name="SkinThickness">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 pl-md-6">
+                        <div class="form-group">
+                          <label>Insulin:</label>
+                          <input type="text" class="form-control" placeholder="Ej: 0" name="Insulin">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 pl-md-6">
+                        <div class="form-group">
+                          <label>BMI:</label>
+                          <input type="text" class="form-control" placeholder="Ej: 33.6" name="BMI">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 pl-md-6">
+                        <div class="form-group">
+                          <label>Diabetes Pedigree Function:</label>
+                          <input type="text" class="form-control" placeholder="Ej: 0.627" name="DiabetesPedigreeFunction">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 pl-md-6">
+                        <div class="form-group">
+                          <label>Edad:</label>
+                          <input type="text" class="form-control" placeholder="Ej: 50" name="Edad">
+                        </div>
+                    </div>
+                </div>
+
+
+
+
             <button type="submit" class="btn btn-fill btn-primary">Cargar archivo</button>  
+            <br></br>
+            {% if filename %}
+            <h3 class="card-title">Resultados</h3>
+            <p>Nombre del archivo: <span class="text-primary"> {{filename}} </span></p>
+
+            <h3 class="card-title">Selección de características</h3>
+            </p>
+            <p>
+            A través de un mapa de calor de identifican posibles variables correlacionadas.
+            </p>
+            <p>
+            Observa y analiza la correlación. Dependiendo de este análisis, se consideran las variables para la construcción de el modelo.
+                </p>
+            <div align="center">
+             <img src="data:image/png;base64, {{ plot_url }}">
+            </div>
+            <br></br>
+            <h3 class="card-title">Definición de las variables predictoras y variable clase</h3>
+            <p>
+                En este caso, ante la no presencia de correlaciones altas, se consideran a todas las variables.
+                </p>
+            <p>
+                Variables predictoras: <span class="text-primary"> 
+                    'Pregnancies', 
+                    'Glucose', 
+                    'BloodPressure', 
+                    'SkinThickness', 
+                    'Insulin', 
+                    'BMI',
+                    'DiabetesPedigreeFunction',
+                    'Age'</span>
+            </p>
+            <br></br>
+
+            <p>
+                Variables clase: <span class="text-primary"> 
+                    'Outcome'</span>
+            </p>
+            <p>
+                Nuestra variable clase es "Outcome" porque es lo que nos va a decir si saldrá positivo o negativo en el diagnóstico.
+
+        
+            <p>
+                Observa  a 'Outcome':
+            </p>
+            <div align="center">
+                {{ outD | safe}}  
+            </div>
+
+            <br></br>
+
+            <h3 class="card-title">Creación de los modelos. <span class="text-primary"> Regresión Logística</span></h3>
+            <p>
+                1.-Se entrena el modelo a partir de los datos de entrada.
+        
+            </p>
+            <p>
+                2.- Se obtienen las predicciones probabilísticas. 
+            
+            </p>
+            <p>
+
+                    <div align="center">
+                        {{ proba | safe}}
+                    </div>
+            </p>
+
+            <p>
+                3.- Se obtiene una clasificación final
+                    
+            </p> 
+            {{Y_ClasificacionRL}}
+            <br></br>
+            <p>
+                3.- Y finalmente, se obtiene un accuracy_score de : <span class="text-primary">{{accuracy}}</span>
+                    
+            </p> 
+            <br></br>
+            <h3 class="card-title">Validación:<span class="text-primary"> Regresión Logística</span></h3>     
+            <p>
+                Se observa la siguiente Matriz de clasificación:
+                <div align="center"> {{Matriz_Clasificacion | safe}} </div>
+                    
+            </p>
+            
+            <p>
+                Se refleja una exactitud de <span class="text-primary">{{exactitud}}</span>. 
+                <p> Además, el reporte indica lo siguiente:
+                <div align="center"> {{report | safe }} </div>
+                    
+            </p>  
+
+            <h3 class="card-title">Curva ROC</h3>
+
+            <div align="center">
+                <img src="data:image/png;base64, {{ plot_url1 }}">
+               </div>
+               <br></br>
+            <p>
+                Para interpretar los resultados toma en cuenta lo siguiente:
+                </p>
+                <p>1= Diabético </p>
+                <p>0=No Diabético</p>
+            
+                <p>
+                El pronóstico del paciente con las características proporcionadas es:  <span class="text-primary">{{resultadosF}} </span></p>
+
+                
+                
+
+
+
+            
+           {% endif %}
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
           </form>
 
           <br></br>
+          
 
         
 
