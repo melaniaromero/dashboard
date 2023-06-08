@@ -1,18 +1,36 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Clustering</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    <h1>Clustering</h1>
+{% extends "layouts/base.html" %}
 
-    <h2>Seleccionar archivo CSV</h2>
-    <form action="/clustering" method="post" enctype="multipart/form-data">
-        <input type="file" name="csv_file" accept=".csv" required>
-        <br><br>
+{% block title %} Clustering {% endblock %} 
 
-        <input type="submit" value="Realizar Clustering">
-    </form>
-</body>
-</html>
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+
+<div class="content">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Segundo algoritmo: Clustering</h3>
+          </div>
+
+         <div class="card-body">
+          <form action = "/clustering" onsubmit="Validate(this);" method = "POST" enctype = "multipart/form-data">
+            <div class="col-md-15 pr-md-10">
+                <label>Selecciona un archivo</label> 
+                <br></br>
+                <input type="file" class="btn btn-fill btn-primary" name="file"></br>
+            </div>            
+            <br></br>
+            <button type="submit" class="btn btn-fill btn-primary">Cargar archivo</button>  
+          </form>
+          <br></br>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
