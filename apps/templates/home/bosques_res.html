@@ -1,0 +1,45 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Bosques {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+<div class="content">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Cuarto Algoritmo: Bosques Aleatorios o Múltiples</h3>
+        </div>
+        <div class="card-body">
+          <h1>Resultados</h1>
+          
+          <h2>Métricas de evaluación:</h2>
+          <p>MSE: {{ mse }}</p>
+          <p>MAE: {{ mae }}</p>
+          <p>R2: {{ r2 }}</p>
+          
+          <h2>Gráfico de predicciones:</h2>
+          <blockquote class="blockquote blockquote-primary">
+            <p class="mb-0">El gráfico de predicciones muestra las predicciones realizadas por un modelo o algoritmo en un conjunto de datos. Proporciona una representación visual de cómo se comparan las predicciones con los valores reales. Este tipo de gráfico es útil para evaluar la precisión y el rendimiento del modelo, y para identificar posibles patrones o tendencias en los datos.</p>
+          </blockquote>
+          <img src="{{ url_for('static', filename='plot.png') }}" alt="Gráfico de predicciones">
+          <blockquote class="blockquote blockquote-primary">
+            <p class="mb-0">El gráfico del árbol de decisiones muestra la estructura jerárquica de un modelo de árbol de decisiones. En un árbol de decisiones, se toman decisiones en base a reglas y condiciones que dividen los datos en diferentes ramas o nodos. Cada nodo representa una pregunta o condición, y las ramas representan las posibles respuestas o resultados. Este gráfico permite visualizar y comprender cómo se toman las decisiones en el modelo.</p>
+          </blockquote>
+          <h2>Gráfico del árbol de decisiones:</h2>
+          <img src="{{ url_for('static', filename='decision_tree.png') }}" alt="Gráfico del árbol de decisiones">
+
+          <h2>Curva ROC:</h2>
+          <blockquote class="blockquote blockquote-primary">
+            <p class="mb-0">La curva ROC es una representación gráfica de la sensibilidad y especificidad de un modelo de clasificación. Muestra la relación entre la tasa de verdaderos positivos (sensibilidad) y la tasa de falsos positivos (1-especificidad) para diferentes umbrales de clasificación. La curva ROC es útil para evaluar el rendimiento y la precisión de un modelo de clasificación binaria. Cuanto más se acerque la curva ROC al área bajo la curva (AUC) de 1, mejor será el rendimiento del modelo en términos de capacidad de discriminación.</p>
+          </blockquote>
+          <img src="{{ url_for('static', filename='roc_curve.png') }}" alt="Curva ROC">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

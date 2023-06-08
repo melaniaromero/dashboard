@@ -162,4 +162,3 @@ def save():
     return render_template('home/content.html',s=s,c=c,l=l,ResultadosC1=ResultadosC1,total_item=total_item,
                            column_names=resultsinDataFrame.columns.values, row_data=list(resultsinDataFrame.values.tolist()),
                            zip=zip)
-
