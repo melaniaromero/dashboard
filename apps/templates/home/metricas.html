@@ -1,0 +1,96 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Apriori {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="content">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title"> Métricas de distancia</h3>
+          </div>
+         <div class="card-body">
+            <form action="/metricas" onsubmit="Validate(this);" method="POST" enctype = "multipart/form-data">
+                <!--selecciona archivo-->
+                <p>
+                    <h5><span class="text-primary">Primer paso:</span> Selecciona tu archivo.</h5>
+                  </p>
+                <div class="col-md-15 pr-md-10">
+                    
+                    <input type="file" class="btn btn-fill btn-primary" name="file"></br>
+                </div> 
+
+                <!--selecciona tipo de estandazrizacion-->
+
+                <div class="col-md-15 pr-md-10">
+                    <br></br>  
+                  <p>
+                    <h5><span class="text-primary">Segundo paso:</span> Selecciona el tipo de estandarización que requieras.</h5>
+                  </p>
+                  En los algoritmos basados en distancias es fundamental escalar o 
+                    normalizar los datos para que cada una de las variables contribuyan 
+                    por igual en el análisis.
+                    <br></br>
+                  <select name="estandarizar">
+                    <option value="">Selecciona</option>
+                    <option value="Normalizada">Normalizar</option>
+                    <option value="Estandarizada">Estandarizar</option>
+                  </select>
+                </div>
+
+                 <!--selecciona tipo de metrica-->
+
+                <div class="col-md-15 pr-md-10">
+                    <br></br>  
+                  <p>
+                    <h5><span class="text-primary">Tercer paso:</span> Selecciona la métrica de distancia de tu preferencia.</h5>
+                  </p>
+                    
+                  <select name="distancia">
+                    <option value="">Selecciona</option>
+                    <option value="Euclidiana">Euclidiana</option>
+                    <option value="Chebysev">Chebyshev</option>
+                    <option value="Manhattan">Manhattan </option>
+                    <option value="Minkowski">Minkowski</option>
+                  </select>
+                </div>
+
+                <br></br>
+
+                <!--selecciona matriz completa o  sólo una parte-->
+
+                <div class="row">    
+                    <div class="col-md-6 pr-md-1">
+
+                        <p>
+                            <h5><span class="text-primary">Cuarto paso:</span> ¿Hasta qué parte de la matriz de distancia quieres ver?</h5>
+                            <h5>Ej: Si escribes 6, tendrás una matriz de 6x6</h5>
+                        </p>
+    
+                    <div class="row">
+                      <div class="col-md-6 pl-md-6">
+                          <div class="form-group">
+                            <label>Escribe un número.</label>
+                            <input type="text" class="form-control" placeholder="Ej: 1, 2, 3" name="fila">
+                          </div>
+                      </div>
+                    </div>
+
+                <button type="submit" class="btn btn-fill btn-primary">Ejecutar</button>
+              </form>
+         
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}
