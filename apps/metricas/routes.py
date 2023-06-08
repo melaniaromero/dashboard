@@ -94,15 +94,84 @@ def save_file():
         select1= request.form.get('estandarizar')
         select2= request.form.get('distancia')
 
+        normalizar=MinMaxScaler()
+        MNormalizada=normalizar.fit_transform(Hipoteca)
+
+        estandarizar = StandardScaler()                               # Se instancia el objeto StandardScaler o MinMaxSca
+        MEstandarizada = estandarizar.fit_transform(Hipoteca) 
+
+####NORMALIZADA
+
         if select1== "Normalizada" and select2== "Euclidiana":
-            normalizar=MinMaxScaler()
-            MNormalizada=normalizar.fit_transform(Hipoteca)
             #EUCLIDIANA
-            #DstNEuclidiana = cdist(MNormalizada, MNormalizada, metric='euclidean')
-            #MNEuclidiana = pd.DataFrame(DstNEuclidiana)
             DstNEuclidiana = cdist(MNormalizada[0:filas], MNormalizada[0:filas], metric='euclidean')
-            MNEuclidiana = pd.DataFrame(DstNEuclidiana)
-            return render_template('home/normaEuclidiana.html', filename =filename, MNEuclidiana=MNEuclidiana.to_html())
+            resultsinDataFrame = pd.DataFrame(DstNEuclidiana)
+            return render_template('home/normaEuclidiana.html', filename =filename, 
+                                  column_names=resultsinDataFrame.columns.values, 
+                                  row_data=list(resultsinDataFrame.reset_index().values.tolist()),
+                                   zip=zip)
+        
+        if select1== "Normalizada" and select2== "Chebyshev":
+            DstNChebyshev = cdist(MNormalizada[0:filas], MNormalizada[0:filas], metric='chebyshev')
+            resultsinDataFrame = pd.DataFrame(DstNChebyshev)
+            return render_template('home/normaChebyshev.html', filename =filename,
+                                   column_names=resultsinDataFrame.columns.values, 
+                                  row_data=list(resultsinDataFrame.reset_index().values.tolist()),
+                                   zip=zip)
+        
+        if select1== "Normalizada" and select2== "Manhattan":
+            DstNManhattan = cdist(MNormalizada[0:filas], MNormalizada[0:filas], metric='cityblock')
+            resultsinDataFrame = pd.DataFrame(DstNManhattan)
+            return render_template('home/normaManhattan.html', filename =filename,
+                                   column_names=resultsinDataFrame.columns.values, 
+                                  row_data=list(resultsinDataFrame.reset_index().values.tolist()),
+                                   zip=zip)
+        
+        if select1== "Normalizada" and select2== "Minkowski":
+            DstNMinkowski = cdist(MNormalizada[0:filas], MNormalizada[0:filas], metric='minkowski', p=1.5)
+            resultsinDataFrame = pd.DataFrame(DstNMinkowski)
+            return render_template('home/normaMinkowski.html', filename =filename,
+                                   column_names=resultsinDataFrame.columns.values, 
+                                  row_data=list(resultsinDataFrame.reset_index().values.tolist()),
+                                   zip=zip)
+##ESTANDARIZADA
+        if select1== "Estandarizada" and select2== "Euclidiana":
+            #EUCLIDIANA
+            DstNEuclidiana = cdist(MEstandarizada[0:filas], MEstandarizada[0:filas], metric='euclidean')
+            resultsinDataFrame = pd.DataFrame(DstNEuclidiana)
+            return render_template('home/estanEuclidiana.html', filename =filename, 
+                                  column_names=resultsinDataFrame.columns.values, 
+                                  row_data=list(resultsinDataFrame.reset_index().values.tolist()),
+                                   zip=zip)
+        
+        if select1== "Estandarizada" and select2== "Chebyshev":
+            DstNChebyshev = cdist(MEstandarizada[0:filas], MEstandarizada[0:filas], metric='chebyshev')
+            resultsinDataFrame = pd.DataFrame(DstNChebyshev)
+            return render_template('home/estanChebyshev.html', filename =filename,
+                                   column_names=resultsinDataFrame.columns.values, 
+                                  row_data=list(resultsinDataFrame.reset_index().values.tolist()),
+                                   zip=zip)
+        
+        if select1== "Estandarizada" and select2== "Manhattan":
+            DstNManhattan = cdist(MEstandarizada[0:filas], MEstandarizada[0:filas], metric='cityblock')
+            resultsinDataFrame = pd.DataFrame(DstNManhattan)
+            return render_template('home/estanManhattan.html', filename =filename,
+                                   column_names=resultsinDataFrame.columns.values, 
+                                  row_data=list(resultsinDataFrame.reset_index().values.tolist()),
+                                   zip=zip)
+        
+        if select1== "Estandarizada" and select2== "Minkowski":
+            DstNMinkowski = cdist(MEstandarizada[0:filas], MEstandarizada[0:filas], metric='minkowski', p=1.5)
+            resultsinDataFrame = pd.DataFrame(DstNMinkowski)
+            return render_template('home/estanMinkowski.html', filename =filename,
+                                   column_names=resultsinDataFrame.columns.values, 
+                                  row_data=list(resultsinDataFrame.reset_index().values.tolist()),
+                                   zip=zip)
+
+        
+        
+        
+        
         
 
 
