@@ -18,15 +18,21 @@
                     <h1>Clustering Particional</h1>
 
                     <h2>Scatter Plot</h2>
-                    <p>El scatter plot muestra la distribución de los datos en un plano bidimensional. Cada punto representa una muestra y su posición relativa indica su similitud o proximidad en el espacio de características.</p>
+                    <blockquote class="blockquote blockquote-primary">
+                        <p class="mb-0">El scatter plot muestra la distribución de los datos en un plano bidimensional. Cada punto representa una muestra y su posición relativa indica su similitud o proximidad en el espacio de características.</p>
+                    </blockquote>
                     <img src="{{ scatter_plot_path }}" alt="Scatter Plot">
 
                     <h2>Elbow Curve</h2>
-                    <p>La curva del codo (elbow curve) es una representación gráfica que muestra la relación entre el número de clusters y la variabilidad dentro de los clusters. Ayuda a determinar el número óptimo de clusters identificando el "codo" en la curva, que indica el punto de menor ganancia al agregar más clusters.</p>
+                    <blockquote class="blockquote blockquote-primary">
+                        <p class="mb-0">La curva del codo (elbow curve) es una representación gráfica que muestra la relación entre el número de clusters y la variabilidad dentro de los clusters. Ayuda a determinar el número óptimo de clusters identificando el "codo" en la curva, que indica el punto de menor ganancia al agregar más clusters.</p>
+                    </blockquote>
                     <img src="{{ elbow_plot_path }}" alt="Elbow Curve">
 
                     <h2>Centroids</h2>
-                    <p>Los centroides son puntos representativos de cada cluster en el clustering particional. Representan el centroide del grupo de muestras asignadas a cada cluster y pueden ser útiles para comprender las características centrales de cada grupo.</p>
+                    <blockquote class="blockquote blockquote-primary">
+                        <p class="mb-0">Los centroides son puntos representativos de cada cluster en el clustering particional. Representan el centroide del grupo de muestras asignadas a cada cluster y pueden ser útiles para comprender las características centrales de cada grupo.</p>
+                    </blockquote>
                     {{ centroids | safe }}
                 </div>
             </div>
