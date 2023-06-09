@@ -111,7 +111,7 @@ def clustering():
                 plt.xlabel('Número de clusters')
                 plt.ylabel('Inercia')
                 plt.title('Método del Codo')
-                elbow_plot_path = os.path.join('static', 'elbow_plot.png')
+                elbow_plot_path = os.path.join(basedir, current_app.config['UPLOAD_FOLDER'], 'elbow_plot.png')
                 plt.savefig(os.path.join(basedir, elbow_plot_path))
                 plt.close()
                 elbow_plot_base64 = convert_image_to_base64(elbow_plot_path)
@@ -212,4 +212,3 @@ def clustering():
                                        pairplot_path_base64=pairplot_path_base64, centroids=Centroides.to_html())
     except Exception as e:
         return f"Error: {e}"
-

@@ -103,7 +103,7 @@ def save_file():
 
         f.save(os.path.join(basedir, current_app.config['UPLOAD_FOLDER'], filename))
         filepath=os.path.join(basedir, current_app.config['UPLOAD_FOLDER'], filename)
-        file = open("C:/Users/melan/Documents/flask-black-dashboard/apps/logistica/static/" + filename,"r")
+        file = open("C:/Users/valer/Documents/GitHub/dashboard/apps/logistica/static/" + filename,"r")
         Diabetes = pd.read_csv(filepath)
 
         out=Diabetes.groupby('Outcome').size()

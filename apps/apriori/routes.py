@@ -84,7 +84,7 @@ def save_file():
         f.save(os.path.join(basedir, current_app.config['UPLOAD_FOLDER'], filename))
         filepath=os.path.join(basedir, current_app.config['UPLOAD_FOLDER'], filename)
         
-        file = open("C:/Users/melan/Documents/flask-black-dashboard/apps/apriori/static/" + filename,"r")
+        file = open("C:/Users/valer/Documents/GitHub/dashboard/apps/apriori/static/" + filename,"r")
 
         file = open(filepath, "r")
         content = file.read()
