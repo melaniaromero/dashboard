@@ -157,8 +157,6 @@ def save():
         resultsinDataFrame = pd.DataFrame(inspect(ResultadosC1),columns=['items_base','items_add','Soporte',
                                                             'Confianza','Elevación'])
 
-
-
     return render_template('home/content.html',s=s,c=c,l=l,ResultadosC1=ResultadosC1,total_item=total_item,
                            column_names=resultsinDataFrame.columns.values, row_data=list(resultsinDataFrame.values.tolist()),
                            zip=zip)

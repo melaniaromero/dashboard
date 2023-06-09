@@ -20,23 +20,33 @@
           <p>MSE: {{ mse }}</p>
           <p>MAE: {{ mae }}</p>
           <p>R2: {{ r2 }}</p>
+
+          <blockquote class="blockquote blockquote-primary">
+            <p class="mb-0">MSE (Mean Squared Error): El Error Cuadrático Medio es una medida que calcula el promedio de los errores al cuadrado entre los valores reales y los valores predichos por el modelo. Es una métrica comúnmente utilizada para evaluar la calidad de un modelo de regresión. Cuanto más bajo sea el valor de MSE, mejor será el modelo, ya que indica que los valores predichos se acercan más a los valores reales.<br><br>
+
+              MAE (Mean Absolute Error): El Error Absoluto Medio es otra métrica comúnmente utilizada en regresión. Calcula el promedio de las diferencias absolutas entre los valores reales y los valores predichos. El MAE es más robusto frente a valores atípicos en comparación con el MSE, ya que no eleva al cuadrado los errores. Al igual que el MSE, un valor de MAE más bajo indica un mejor ajuste del modelo a los datos.<br><br>
+              
+              R2 (Coefficient of Determination): El Coeficiente de Determinación, también conocido como R cuadrado, es una métrica que proporciona una medida de qué tan bien se ajustan los valores predichos del modelo a los valores reales. R2 varía entre 0 y 1, donde 0 indica que el modelo no explica la variabilidad de los datos y 1 indica que el modelo explica toda la variabilidad. Un valor de R2 cercano a 1 sugiere que el modelo es capaz de explicar una gran parte de la variabilidad de los datos.<br></p>
+          </blockquote>
           
           <h2>Gráfico de predicciones:</h2>
           <blockquote class="blockquote blockquote-primary">
             <p class="mb-0">El gráfico de predicciones muestra las predicciones realizadas por un modelo o algoritmo en un conjunto de datos. Proporciona una representación visual de cómo se comparan las predicciones con los valores reales. Este tipo de gráfico es útil para evaluar la precisión y el rendimiento del modelo, y para identificar posibles patrones o tendencias en los datos.</p>
           </blockquote>
-          <img src="{{ url_for('static', filename='plot.png') }}" alt="Gráfico de predicciones">
+          <img src="data:image/png;base64,{{ plot_base64 }}" alt="Gráfico de predicciones">
+
+          <h2>Gráfico del árbol de decisiones:</h2>
           <blockquote class="blockquote blockquote-primary">
             <p class="mb-0">El gráfico del árbol de decisiones muestra la estructura jerárquica de un modelo de árbol de decisiones. En un árbol de decisiones, se toman decisiones en base a reglas y condiciones que dividen los datos en diferentes ramas o nodos. Cada nodo representa una pregunta o condición, y las ramas representan las posibles respuestas o resultados. Este gráfico permite visualizar y comprender cómo se toman las decisiones en el modelo.</p>
           </blockquote>
-          <h2>Gráfico del árbol de decisiones:</h2>
-          <img src="{{ url_for('static', filename='decision_tree.png') }}" alt="Gráfico del árbol de decisiones">
+          <img src="data:image/png;base64,{{ tree_plot_base64 }}" alt="Gráfico de árbol de decisiones">
 
           <h2>Curva ROC:</h2>
           <blockquote class="blockquote blockquote-primary">
             <p class="mb-0">La curva ROC es una representación gráfica de la sensibilidad y especificidad de un modelo de clasificación. Muestra la relación entre la tasa de verdaderos positivos (sensibilidad) y la tasa de falsos positivos (1-especificidad) para diferentes umbrales de clasificación. La curva ROC es útil para evaluar el rendimiento y la precisión de un modelo de clasificación binaria. Cuanto más se acerque la curva ROC al área bajo la curva (AUC) de 1, mejor será el rendimiento del modelo en términos de capacidad de discriminación.</p>
           </blockquote>
-          <img src="{{ url_for('static', filename='roc_curve.png') }}" alt="Curva ROC">
+          <img src="data:image/png;base64,{{ roc_plot_base64 }}" alt="Curva ROC">
+
         </div>
       </div>
     </div>

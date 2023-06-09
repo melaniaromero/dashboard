@@ -1,8 +1,8 @@
-# Importar las bibliotecas necesarias
 from flask import Flask, render_template, request, current_app
 from apps.clustering import blueprint
 from flask_login import login_required
 import pandas as pd
+import numpy as np
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import AgglomerativeClustering, KMeans
 import seaborn as sns
@@ -12,14 +12,17 @@ from scipy.cluster.hierarchy import linkage
 from werkzeug.utils import secure_filename
 import os
 from jinja2 import TemplateNotFound
+import io
+import base64
 
+# Crear una aplicación Flask
+app = Flask(__name__)
 
 # Ruta de inicio
 @blueprint.route('/clustering')
 @login_required
 def index():
     return render_template('home/clustering.html')
-
 
 @blueprint.route('/<template>')
 @login_required
@@ -40,7 +43,6 @@ def route_template(template):
     except:
         return render_template('home/page-500.html'), 500
 
-
 # Helper - Extract current page name from request
 def get_segment(request):
     try:
@@ -54,6 +56,10 @@ def get_segment(request):
     except:
         return None
 
+def convert_image_to_base64(image_path):
+    with open(image_path, "rb") as image_file:
+        encoded_string = base64.b64encode(image_file.read()).decode("utf-8")
+    return encoded_string
 
 @blueprint.route('/clustering', methods=['POST'])
 @login_required
@@ -101,13 +107,14 @@ def clustering():
 
                 # Gráfico del codo
                 plt.figure(figsize=(8, 6))
-                plt.plot(num_clusters_range, inertia, marker='o')
-                plt.xlabel('Número de Clusters')
-                plt.ylabel('Inertia')
+                plt.plot(num_clusters_range, inertia, marker='o', linestyle='-', color='b')
+                plt.xlabel('Número de clusters')
+                plt.ylabel('Inercia')
                 plt.title('Método del Codo')
-                elbow_plot_path = os.path.join(basedir, current_app.config['UPLOAD_FOLDER'], 'elbow_plot.png')
-                plt.savefig(elbow_plot_path)
+                elbow_plot_path = os.path.join('static', 'elbow_plot.png')
+                plt.savefig(os.path.join(basedir, elbow_plot_path))
                 plt.close()
+                elbow_plot_base64 = convert_image_to_base64(elbow_plot_path)
 
                 # Gráfico de puntos distribuidos estandarizados
                 plt.figure(figsize=(8, 6))
@@ -118,6 +125,7 @@ def clustering():
                 scatter_plot_path = os.path.join(basedir, current_app.config['UPLOAD_FOLDER'], 'scatter_plot.png')
                 plt.savefig(scatter_plot_path)
                 plt.close()
+                scatter_plot_base64 = convert_image_to_base64(scatter_plot_path)
 
                 # Obtener los resultados finales con el número óptimo de clusters
                 MKMeans.n_clusters = num_clusters
@@ -130,8 +138,8 @@ def clustering():
                 Centroides = df.groupby(['cluster']).mean()
 
                 # Pasar los resultados a la plantilla HTML correspondiente
-                return render_template('home/clustering_par.html', scatter_plot_path=scatter_plot_path,
-                                       elbow_plot_path=elbow_plot_path, centroids=Centroides.to_html())
+                return render_template('home/clustering_par.html', scatter_plot_base64=scatter_plot_base64,
+                                       elbow_plot_base64=elbow_plot_base64, centroids=Centroides.to_html())
 
             elif clustering_type == 'jerarquico':
                 if distance_metric == 'manhattan':
@@ -162,16 +170,20 @@ def clustering():
                 scatter_plot_path = os.path.join(basedir, current_app.config['UPLOAD_FOLDER'], 'scatter_plot.png')
                 plt.savefig(scatter_plot_path)
                 plt.close()
+                scatter_plot_base64 = convert_image_to_base64(scatter_plot_path)
 
                 # Crear el mapa de calor (heatmap) para el clustering jerárquico
                 plt.figure(figsize=(8, 6))
-                sns.heatmap(df.iloc[:, :2], cbar=True, cmap='viridis')
+                correlation_matrix = df.corr()
+                mask = np.triu(np.ones_like(correlation_matrix, dtype=bool))
+                sns.heatmap(correlation_matrix, mask=mask, annot=True, cmap='viridis')
                 plt.xlabel(df.columns[0])
                 plt.ylabel(df.columns[1])
                 plt.title('Cluster Heatmap (Jerárquico)')
                 heatmap_path = os.path.join(basedir, current_app.config['UPLOAD_FOLDER'], 'heatmap.png')
                 plt.savefig(heatmap_path)
                 plt.close()
+                heatmap_path_base64 = convert_image_to_base64(heatmap_path)
 
                 # Crear el pairplot para el clustering jerárquico
                 plt.figure(figsize=(8, 6))
@@ -180,6 +192,7 @@ def clustering():
                 pairplot_path = os.path.join(basedir, current_app.config['UPLOAD_FOLDER'], 'pairplot.png')
                 plt.savefig(pairplot_path)
                 plt.close()
+                pairplot_path_base64 = convert_image_to_base64(pairplot_path)
 
                 # Crear el dendrograma
                 Z = linkage(MEstandarizada, method='complete', metric=distance_metric)
@@ -191,10 +204,12 @@ def clustering():
                 dendrogram_path = os.path.join(basedir, current_app.config['UPLOAD_FOLDER'], 'dendrogram.png')
                 plt.savefig(dendrogram_path)
                 plt.close()
+                dendrogram_path_base64 = convert_image_to_base64(dendrogram_path)
 
                 # Pasar los resultados a la plantilla HTML correspondiente
-                return render_template('home/clustering_jer.html', scatter_plot_path=scatter_plot_path,
-                                       dendrogram_path=dendrogram_path, heatmap_path=heatmap_path,
-                                       pairplot_path=pairplot_path, centroids=Centroides.to_html())
+                return render_template('home/clustering_jer.html', scatter_plot_base64=scatter_plot_base64,
+                                       dendrogram_path_base64=dendrogram_path_base64, heatmap_path_base64=heatmap_path_base64,
+                                       pairplot_path_base64=pairplot_path_base64, centroids=Centroides.to_html())
     except Exception as e:
         return f"Error: {e}"
+

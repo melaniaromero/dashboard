@@ -17,8 +17,13 @@ from sklearn import model_selection
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.tree import DecisionTreeClassifier, export_graphviz
-import graphviz
+from sklearn.tree import DecisionTreeRegressor
+import pydotplus
+from io import StringIO
 from sklearn.metrics import roc_curve, auc
+import io
+import base64
+import graphviz
 
 # Ruta de inicio
 @blueprint.route('/bosques')
@@ -51,6 +56,11 @@ def get_segment(request):
         return segment
     except:
         return None
+    
+def convert_image_to_base64(image_path):
+    with open(image_path, "rb") as image_file:
+        encoded_string = base64.b64encode(image_file.read()).decode("utf-8")
+    return encoded_string
 
 @blueprint.route('/bosques', methods=['POST'])
 @login_required
@@ -82,7 +92,12 @@ def bosques():
             elif tipo_bosques == 'multiple_trees':
                 modelo = RandomForestRegressor()
             else:
-                modelo = DecisionTreeClassifier()
+                modelo = DecisionTreeRegressor()
+                
+            modelo.fit(X_train, y_train)
+            
+            y_pred = modelo.predict(X_test)
+
 
             modelo.fit(X_train, y_train)
 
@@ -115,27 +130,30 @@ def bosques():
             roc_filename = os.path.join(current_app.config['UPLOAD_FOLDER'], 'roc_curve.png')
             plt.savefig(os.path.join(basedir, roc_filename))  # Guardar la imagen en la carpeta "static"
             plt.close()
+            roc_plot_base64 = convert_image_to_base64(roc_filename)
 
             plot_filename = os.path.join(current_app.config['UPLOAD_FOLDER'], 'plot.png')
+            plot_base64 = convert_image_to_base64(plot_filename)
 
             tree_filename = None
+            tree_plot_base64 = None
 
             if isinstance(modelo, RandomForestClassifier):
                 class_names = np.unique(y)  # Definir los nombres de las clases
                 # Obtener el primer árbol del bosque aleatorio
                 tree = modelo.estimators_[0]
 
-                dot_data = export_graphviz(tree, out_file=None,
-                                           feature_names=datos.columns[:-1],
-                                           class_names=class_names,
-                                           filled=True, rounded=True,
-                                           special_characters=True)
-
-                graph = graphviz.Source(dot_data)
+                plt.figure(figsize=(12, 6))
+                export_graphviz(tree,
+                                feature_names=datos.columns[:-1],
+                                class_names=class_names,
+                                filled=True, rounded=True,
+                                special_characters=True)
+                plt.savefig(os.path.join(upload_folder, 'decision_tree.png'))
                 tree_filename = os.path.join(upload_folder, 'decision_tree.png')
-                graph.render(filename=tree_filename, format='png', directory=upload_folder, cleanup=True)
+                tree_plot_base64 = convert_image_to_base64(tree_filename)
 
-            return render_template('home/bosques_res.html', mse=mse, mae=mae, r2=r2, plot_filename=plot_filename, tree_filename=tree_filename, roc_filename=roc_filename)
+            return render_template('home/bosques_res.html', mse=mse, mae=mae, r2=r2, plot_base64=plot_base64, tree_plot_base64=tree_plot_base64, roc_plot_base64=roc_plot_base64)
 
     except Exception as e:
         return f"Error: {e}"

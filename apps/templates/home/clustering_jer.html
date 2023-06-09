@@ -21,25 +21,25 @@
                     <blockquote class="blockquote blockquote-primary">
                         <p class="mb-0">El scatter plot muestra la distribución de los datos en un plano bidimensional. Cada punto representa una muestra y su posición relativa indica su similitud o proximidad en el espacio de características.</p>
                     </blockquote>
-                    <img src="{{ url_for('static', filename='scatter_plot.png') }}"  alt="Scatter Plot">
+                    <img src="data:image/png;base64,{{ scatter_plot_base64 }}" alt="Cluster Scatter Plot">
 
                     <h2>Dendrogram</h2>
                     <blockquote class="blockquote blockquote-primary">
                         <p class="mb-0">El dendrograma es una representación gráfica de la estructura jerárquica de los clusters. Muestra cómo se agrupan y dividen los datos en función de su similitud. Las ramas del dendrograma indican las fusiones o divisiones de los clusters.</p>
                     </blockquote>
-                    <img src="{{ dendrogram_path }}" alt="Dendrogram">
+                    <img src="data:image/png;base64,{{ dendrogram_path_base64 }}" alt="Dendrogram">
 
                     <h2>Heatmap</h2>
                     <blockquote class="blockquote blockquote-primary">
                         <p class="mb-0">El heatmap es una representación visual de la matriz de similitud o distancia entre las muestras. Los colores en el heatmap muestran la medida de similitud, donde los colores más oscuros indican una mayor similitud y los colores más claros indican una menor similitud.</p>
                     </blockquote>
-                    <img src="{{ heatmap_path }}" alt="Heatmap">
+                    <img src="data:image/png;base64,{{ heatmap_path_base64 }}" alt="Heatmap">
                         
                     <h2>Pairplot</h2>
                     <blockquote class="blockquote blockquote-primary">
                         <p class="mb-0">El pairplot muestra las relaciones y distribuciones de las características en pares. Cada gráfico en el pairplot representa la relación entre dos características, mientras que los histogramas en la diagonal muestran las distribuciones de cada característica por separado.</p>
                     </blockquote>
-                    <img src="{{ pairplot_path }}" alt="Pair Plot">
+                    <img src="data:image/png;base64,{{ pairplot_path_base64 }}" alt="Pair Plot">
 
                     <h2>Centroids</h2>
                     <blockquote class="blockquote blockquote-primary">
@@ -55,4 +55,3 @@
 
 <!-- Specific Page JS goes HERE -->
 {% block javascripts %}{% endblock javascripts %}
-

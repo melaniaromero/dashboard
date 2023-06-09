@@ -21,13 +21,13 @@
                     <blockquote class="blockquote blockquote-primary">
                         <p class="mb-0">El scatter plot muestra la distribución de los datos en un plano bidimensional. Cada punto representa una muestra y su posición relativa indica su similitud o proximidad en el espacio de características.</p>
                     </blockquote>
-                    <img src="{{ scatter_plot_path }}" alt="Scatter Plot">
+                    <img src="data:image/png;base64,{{ scatter_plot_base64 }}" alt="Cluster Scatter Plot">
 
                     <h2>Elbow Curve</h2>
                     <blockquote class="blockquote blockquote-primary">
                         <p class="mb-0">La curva del codo (elbow curve) es una representación gráfica que muestra la relación entre el número de clusters y la variabilidad dentro de los clusters. Ayuda a determinar el número óptimo de clusters identificando el "codo" en la curva, que indica el punto de menor ganancia al agregar más clusters.</p>
                     </blockquote>
-                    <img src="{{ elbow_plot_path }}" alt="Elbow Curve">
+                    <img src="data:image/png;base64,{{ elbow_plot_base64 }}" alt="Elbow Curve Plot">
 
                     <h2>Centroids</h2>
                     <blockquote class="blockquote blockquote-primary">
